@@ -31,13 +31,13 @@ mysql -u root -p
 **MySQL 설정**
 
 ```sql
-CREATE DATABASE IF NOT EXISTS testDb CHARACTER SET utf8mb4;
+CREATE DATABASE IF NOT EXISTS jpabegin CHARACTER SET utf8mb4;
     
 CREATE USER 'jpauser'@'localhost' IDENTIFIED BY 'jpapass';
 CREATE USER 'jpauser'@'%' IDENTIFIED BY 'jpapass';
     
-GRANT ALL PRIVILEGES ON testdb.* TO 'jpauser'@'localhost';
-GRANT ALL PRIVILEGES ON testdb.* TO 'jpauser'@'%';
+GRANT ALL PRIVILEGES ON jpabegin.* TO 'jpauser'@'localhost';
+GRANT ALL PRIVILEGES ON jpabegin.* TO 'jpauser'@'%';
 
 FLUSH PRIVILEGES;
 ```
