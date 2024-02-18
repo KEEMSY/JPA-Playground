@@ -1,12 +1,14 @@
 package com.study.jpaplayground.JPA.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 [ 객체와 테이블 매핑 어노테이션 ]
@@ -49,34 +51,33 @@ import java.time.LocalDateTime;
 - @MappedSuperclass: 공통 매핑 정보가 필요할 때 사용하는 어노테이션. 해당 어노테이션을 사용한 클래스는 테이블과 매핑되지 않음
  */
 
-@Getter @Setter
+@Getter
 @Entity
-@Table(name = "user")
-public class User {
-    @Id
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "members")
+public class Member {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // @GeneratedValue: 기본 키 생성 전략을 지정
+    @Column(name = "member_id")
+    private Long id;
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public User() {
-    }
-    public User(String email, String name, LocalDateTime createdAt) {
+    // @OneToMany: 일대다 관계 매핑, mappedBy 속성으로 연관관계의 주인이 아님을 명시
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Trade> trades = new ArrayList<>();
+
+    public Member(String email, String name, LocalDateTime now) {
         this.email = email;
         this.name = name;
-        this.createdAt = createdAt;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+        this.createdAt = now;
     }
 
     public void changeName(String name) {

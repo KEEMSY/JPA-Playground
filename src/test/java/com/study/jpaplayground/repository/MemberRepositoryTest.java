@@ -1,6 +1,6 @@
 package com.study.jpaplayground.repository;
 
-import com.study.jpaplayground.JPA.entity.User;
+import com.study.jpaplayground.JPA.entity.Member;
 import com.study.jpaplayground.exception.NoUserException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,43 +11,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class UserRepositoryTest {
+class MemberRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("유저 생성 테스트")
-    void createUser() {
+    void createUser() throws NoUserException {
         // given
-        String email = "user@emailWithAnnotation";
+        String email = "user@emailWithAnnotation1";
         String name = "user";
 
         // when
-        userRepository.createUser(email, name);
+        memberRepository.createMember(email, name);
 
         // then
-        User user = userRepository.getUser(email);
-        assertEquals(email, user.getEmail());
-        assertEquals(name, user.getName());
+        Member member = memberRepository.findMemberByEmail(email);
+        assertEquals(email, member.getEmail());
+        assertEquals(name, member.getName());
     }
 
     @Test
     @DisplayName("유저 이름 변경 테스트")
-    void updateUser() {
+    void updateUser() throws NoUserException {
         // given
         String email = "user@emailWithAnnotation";
         String name = "user";
-        userRepository.createUser(email, name);
+        memberRepository.createMember(email, name);
 
         // when
         String changedName = "changedUser";
-        userRepository.updateUser(email, changedName);
+        memberRepository.updateMember(email, changedName);
 
         // then
-        User user = userRepository.getUser(email);
-        assertEquals(email, user.getEmail());
-        assertEquals(changedName, user.getName());
+        Member member = memberRepository.findMemberByEmail(email);
+        assertEquals(email, member.getEmail());
+        assertEquals(changedName, member.getName());
     }
 
     @Test
@@ -56,14 +56,16 @@ class UserRepositoryTest {
         // given
         String email = "user@emailWithAnnotation";
         String name = "user";
-        userRepository.createUser(email, name);
+        memberRepository.createMember(email, name);
+        Member createdMember = memberRepository.findMemberByEmail(email);
 
         // when
-        userRepository.deleteUser(email);
+        memberRepository.deleteMemberByEmail(email);
 
         // then
-        User user = userRepository.getUser(email);
-        assertEquals(null, user);
+        Long memberId = createdMember.getId();
+        Member member = memberRepository.findMemberById(memberId);
+        assertEquals(null, member);
     }
 
     @Test
@@ -74,6 +76,6 @@ class UserRepositoryTest {
 
         // when, then
         assertThrows(NoUserException.class, ()
-                -> userRepository.deleteUser(email));
+                -> memberRepository.deleteMemberByEmail(email));
     }
 }
