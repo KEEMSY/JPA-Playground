@@ -101,11 +101,17 @@ public class MemberRepository {
         }
     }
 
-    public Member findMemberById(Long id) {
+    // 존재하지 않을 경우, null 을 반환하기 때문에 Null 처리를 해주는 것 이 좋다.
+    public Member findMemberById(Long id) throws NoUserException {
         EntityManager em = emf.createEntityManager();
 
         try {
-            return em.find(Member.class, id);
+            Member member = em.find(Member.class, id);
+            if (member == null) {
+                throw new NoUserException("해당 유저가 존재하지 않습니다.");
+            }
+
+            return member;
         } finally {
             if (em != null) {
                 em.close();

@@ -64,8 +64,8 @@ class MemberRepositoryTest {
 
         // then
         Long memberId = createdMember.getId();
-        Member member = memberRepository.findMemberById(memberId);
-        assertEquals(null, member);
+        assertThrows(NoUserException.class, ()
+                -> memberRepository.findMemberById(memberId));
     }
 
     @Test
